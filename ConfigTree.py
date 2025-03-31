@@ -39,12 +39,14 @@ class Config:
             search_mode=kg_search_mode,
             gen_knowledge=use_knowledge,
         )
+        self.visited_node = 0
 
     def run(self):
         while len(self.unvisit_node_list) > 0:
             self.current_node = self.unvisit_node_list.pop()
             print(f"Visiting menu {'/'.join(self.node_dir_dict[self.current_node])}")
             self.process()
+        print("Visited nodes: ", self.visited_node)
 
     def process(self):
         # get extended node list
@@ -62,6 +64,7 @@ class Config:
             item = node.item  # determine node type through this property
             if item == klib.MENU:
                 menu_nodes.append(node)
+                self.visited_node += 1
             elif item == klib.COMMENT:
                 # TODO: ignore comment currently
                 pass
@@ -69,6 +72,7 @@ class Config:
                 # symbol or choice node
                 if item.type in (klib.STRING, klib.INT, klib.HEX):
                     value_nodes.append(node)
+                    self.visited_node += 1
                 # select visible choice node
                 elif (
                     isinstance(item, klib.Choice)
@@ -76,11 +80,14 @@ class Config:
                     and item.str_value == "y"
                 ):
                     multiple_nodes.append(node)
+                    self.visited_node += 1
                 elif len(item.assignable) == 1 and node.list:
                     # this node is a menu and is set to 'y' always
                     menu_nodes.append(node)
+                    self.visited_node += 1
                 elif item.type == klib.BOOL:
                     bool_nodes.append(node)
+                    self.visited_node += 1
                 elif item.type == klib.TRISTATE:
                     if item.assignable == (1, 2):
                         binary_nodes.append(node)

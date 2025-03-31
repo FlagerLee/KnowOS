@@ -3,6 +3,7 @@ from ConfigTree import Config
 from LLM import ChatContext
 import os
 import logging
+import time
 
 import argparse
 
@@ -54,9 +55,12 @@ def main():
         use_knowledge=bool(args.use_knowledge),
         config_path=f"{args.path}/.config",
     )
+    start = time.time()
     config.run()
+    end = time.time()
     config.save(args.output)
     print("Money spent on LLM: ", chatter.price)
+    print("Time cost: ", end - start, "s")
 
 
 if __name__ == "__main__":
