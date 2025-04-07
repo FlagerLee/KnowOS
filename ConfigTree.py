@@ -36,10 +36,14 @@ class Config:
         self.target = target
         self.kg = KnowledgeGenerator(
             working_dir=C.WORKING_DIR,
+            query=target,
             search_mode=kg_search_mode,
             gen_knowledge=use_knowledge,
         )
         self.visited_node = 0
+
+        # add tags to log file
+        self.logger.info(','.join(self.kg.tags))
 
     def run(self):
         while len(self.unvisit_node_list) > 0:
@@ -378,3 +382,18 @@ class Config:
             return item.name
         else:
             return node.prompt[0]
+    
+    def feed_back(self, text, increment):
+        """
+        input Config.log
+        if this config increases, set increment to True, else set to False
+        """
+        config_lines = text.split('\n')
+        tags = config_lines[0].split(',')
+        config_lines = config_lines[1:]
+        configs = [config_line.split('=')[0] for config_line in config_lines]
+        if increment:
+            self.kg.add_tag(tags, configs)
+        else:
+            self.kg.delete_tag(tags, configs)
+
