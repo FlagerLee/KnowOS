@@ -172,6 +172,8 @@ class ChatContext:
             index = ans.split(" ")[0]
             if index.isspace():
                 continue
+            elif index == "":
+                continue
             try:
                 index = int(index)
             except ValueError:

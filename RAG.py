@@ -25,7 +25,7 @@ class KnowledgeGenerator:
             else gpt_4o_mini_complete
         )
         setup_logger("lightrag", "ERROR")
-        asyncio.run(self.__async_init())
+        asyncio.run(self.__async_init(working_dir, model_func))
         # self.gen_configs_knowledge()
         self.search_mode = search_mode
         self.gk = gen_knowledge
@@ -39,6 +39,13 @@ class KnowledgeGenerator:
         self.driver = GraphDatabase.driver(uri=uri, auth=(username, password))
         
         self.tags = self.query_to_tag(query)
+        # add these tags to db
+        for tag in self.tags:
+            record = self.driver.execute_query('MATCH (n {{entity_id: "{}"}}) RETURN count(n)'.format(tag)).records[0]
+            if record.value() == 0:
+                # add tag
+                query = 'CREATE (n:TAG {{entity_id: "{}"}})'.format(tag)
+                self.driver.execute_query(query)
 
     async def __async_init(self, working_dir, model_func):
         self.rag = LightRAG(
@@ -54,14 +61,20 @@ class KnowledgeGenerator:
         # add query into rag
         self.rag.insert(target)
         # connect
-        query = f"Given target = '{target}', which entities might related to this target? Answer the entity name only."
+        query = f"Given target = '{target}', give me some of the keywords only. Do not give the references."
         results = self.rag.query(query)
         result_list = results.split('\n')
-        tags = [result[2:] for result in result_list]
+        print(results)
+        tags = []
+        for result in result_list:
+            if result.strip() != "" and not result[0].isalpha():
+                tags.append(result[2:])
         return tags
 
     def gen_knowledge(self, prompt: str):
-        return self.rag.query(prompt, param=QueryParam("hybrid"))
+        knowledge = self.rag.query(prompt, param=QueryParam("hybrid"))
+        # print(knowledge)
+        return knowledge
 
     def gen_configs_knowledge(self, configs: list[klib.MenuNode], target: str):
         if not self.gk:
@@ -93,7 +106,7 @@ class KnowledgeGenerator:
         knowledge = self.gen_knowledge(prompt)
 
         # append additional knowledge
-        def get_tags_by_config(self, config: str):
+        def get_tags_by_config(config: str):
             query = """
 MATCH (n)-[:HAS_TAG]->(m)
 WHERE m.name = $config_name
@@ -109,7 +122,7 @@ TARGET {target} might related to these tags: {', '.join(self.tags)}. The relatio
 """
         for config_name in config_name_list:
             tags = get_tags_by_config(config_name)
-            union = tags & self.tags
+            union = set(tags) & set(self.tags)
             if len(union) > 0:
                 additional_knowledge += f"config '{config_name}' might affect tags {union}\n"
 
@@ -174,14 +187,14 @@ TARGET {target} might related to these tags: {', '.join(self.tags)}. The relatio
         })
     
     def add_tag(self, tags, configs):
-        query = """MATCH (n {entity_id: "$tag"}), (m {entity_id: "$config"})
+        query = """MATCH (n {{entity_id: "{}"}}), (m {{entity_id: "{}"}})
 CREATE (n)-[:HAS_TAG]->(m)"""
         for tag in tags:
             for config in configs:
-                self.driver.execute_query(query, tag = tag, config=config)
+                self.driver.execute_query(query.format(tag, config))
     def delete_tag(self, tags, configs):
-        query = """MATCH (n {entity_id: "$tag"})-[r:HAS_TAG]->(m {entity_id: "$config"})
+        query = """MATCH (n {{entity_id: "{}"}})-[r:HAS_TAG]->(m {{entity_id: "{}"}})
 DELETE r"""
         for tag in tags:
             for config in configs:
-                self.driver.execute_query(query, tag=tag, query=query)
+                self.driver.execute_query(query.format(tag, config))

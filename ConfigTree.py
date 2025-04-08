@@ -40,6 +40,7 @@ class Config:
             search_mode=kg_search_mode,
             gen_knowledge=use_knowledge,
         )
+        # self.kg.init_config_storage(self.kconfig.top_node)
         self.visited_node = 0
 
         # add tags to log file
@@ -178,6 +179,8 @@ class Config:
                         f"LLM gives non-existent nodes(int). current node is\n{nodes}\nLLM gives\n{answer}"
                     )
             else:
+                if answer.strip() == "":
+                    continue
                 if answer in node_name_dict.keys():
                     if answer.isspace() or answer == "" or answer == "\n":
                         continue
