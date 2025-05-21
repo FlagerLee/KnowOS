@@ -9,7 +9,6 @@ class ChatContext:
     def __init__(
         self,
         opt_target: str,
-        opt_description: str,
         api_key: str,
         api_url: str = "https://api.ai.cs.ac.cn/v1",
         model: str = "gpt-3.5-turbo-1106",
@@ -64,41 +63,12 @@ class ChatContext:
         [config_name]
         """
         
-        self.binary_option_prompt = (
-            f"I'm exploring the Linux kernel's menuconfig for configurations that might "
-            f"{opt_description}. Here are  multiple binary choice options in menuconfig. "
-            f"There are two settings for an option: 'M' or 'on', which 'M' means configuring "
-            f"this option as a module and 'on' means compiling this option into the kernel "
-            f"image to make it a part of the kernel. .Please set the  options at a time to "
-            f"potentially {opt_description}. My format:\n [option name]   \n  Your response "
-            f"format: \n [option name]  {{M or on}}\nfor example:  when I give: 'reveive "
-            f"buffer(rbuf) \n log buffer(lbuf)\n ',your answer is 'receive buffer(rbuf) "
-            f"{{on}} \n log buffer(lbuf) {{M}}' \nRemember to  recommend settings to possibly "
-            f"{opt_description} for each option: No extra explanations needed. Only suggest "
-            f"options which may be related. Do not mention reason. Please obey the rules. "
-            f"Here are some binary choice options, please  recommend:"
-        )
-        self.trinary_option_prompt = (
-            f"I'm exploring the Linux kernel's menuconfig for configurations that might "
-            f"{opt_description}. Here are  multiple ternary choice options in menuconfig. "
-            f"There are three settings for an option: 'M', 'on' or 'off', which 'M' means "
-            f"configuring this option as a module , 'on' means compiling this option into "
-            f"the kernel image to make it a part of the kernel. and 'off' means disabling "
-            f"this option, not compiling it as a kernel component.Please set the  options at "
-            f"a time to potentially {opt_description}. My format:\n [option name]   \n  Your "
-            f"response format: \n [option name]  <M or on or  off>\nfor example:  when I "
-            f"give: 'reveive buffer(rbuf)  \n log buffer(lbuf) \n Debug Filesystem(DFile) ',"
-            f"your answer is 'receive buffer(rbuf) <on> \n  log buffer(lbuf) <M> \n Debug "
-            f"Filesystem(DFile) <off>'   \nRemember to  recommend settings to possibly "
-            f"{opt_description} for each option: No extra explanations needed. Only suggest "
-            f"options which may be tie to {opt_description}. Do not mention reason. Please "
-            f"obey the rules. Here are some ternary choice options, please recommend:"
-        )
         self.value_option_prompt = (
-            f"I'm looking for the Linux kernel's menuconfig options that could potentially affect {opt_description}."
+            f"TARGET = {opt_target}\n\n"
+            f"I'm looking for the Linux kernel's menuconfig options that could potentially affect TARGET."
             f"I have listed some numeric config options listed in menuconfig, along with their corresponding value ranges.\n"
-            f"For each option, please select a value that may help improve {opt_description}." 
-            f"If the option is not related to {opt_description}, reset it to the defalut value. \n"
+            f"For each option, please select a value that may help improve TARGET." 
+            f"If the option is not related to TARGET, reset it to the defalut value. \n"
             f"Config input format:\n "
             f"[option name] (default value)  \n"
             f"Value output format: \n" 
@@ -109,7 +79,7 @@ class ChatContext:
             f"'maximum CPU number(1=>2 2=>4)  (cpunum) (2)\n"
             f"Because when the CPU number is more, the speed is usually better.\n"
             f"Attention! Please provide your recommended values without extra explanations or additional details.\n"
-            f"Only suggest options that could possibly help {opt_description}, and do not add units next to the numbers.\n"
+            f"Only suggest options that could possibly help TARGET, and do not add units next to the numbers.\n"
             f"Below are the numeric config options for your recommendations: "
         )
         self.new_value_option_prompt = """
@@ -171,8 +141,6 @@ class ChatContext:
         for ans in answers:
             index = ans.split(" ")[0]
             if index.isspace():
-                continue
-            elif index == "":
                 continue
             try:
                 index = int(index)

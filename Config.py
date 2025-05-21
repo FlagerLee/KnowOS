@@ -1,4 +1,4 @@
-KEY = ""  # replace key here
+KEY = "sk-xxx"  # replace key here
 CC = "gcc"
 LD = "ld"
 SRCTREE = "."
