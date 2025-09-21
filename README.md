@@ -1,6 +1,6 @@
-# BYOS: Knowledge-driven Large Language Models Bring Your Own Operating System More Excellent  
+# KnowOS: Knowledge-driven Large Language Models for Operating System Kernel Tuning
 
-Official resources of **"BYOS: Knowledge-driven Large Language Models Bring Your Own Operating System More Excellent  "**. [Hongyu Lin](https://arxiv.org/search/cs?searchtype=author&query=Lin,+H), [Yuchen Li](https://arxiv.org/search/cs?searchtype=author&query=Li,+Y), [Haoran Luo](https://arxiv.org/search/cs?searchtype=author&query=Luo,+H), [Kaichun Yao](https://arxiv.org/search/cs?searchtype=author&query=Yao,+K), [Libo Zhang](https://arxiv.org/search/cs?searchtype=author&query=Zhang,+L), [Mingjie Xing](https://arxiv.org/search/cs?searchtype=author&query=Xing,+M), [Yanjun Wu](https://arxiv.org/search/cs?searchtype=author&query=Wu,+Y). [[paper](https://arxiv.org/abs/2503.09663)]
+Official resources of **"KnowOS: Knowledge-driven Large Language Models for Operating System Kernel Tuning"**. [Hongyu Lin](https://arxiv.org/search/cs?searchtype=author&query=Lin,+H), [Yuchen Li](https://arxiv.org/search/cs?searchtype=author&query=Li,+Y), [Haoran Luo](https://arxiv.org/search/cs?searchtype=author&query=Luo,+H), [Kaichun Yao](https://arxiv.org/search/cs?searchtype=author&query=Yao,+K), [Libo Zhang](https://arxiv.org/search/cs?searchtype=author&query=Zhang,+L), [Mingjie Xing](https://arxiv.org/search/cs?searchtype=author&query=Xing,+M), [Yanjun Wu](https://arxiv.org/search/cs?searchtype=author&query=Wu,+Y). [[paper](https://arxiv.org/abs/2503.09663)]
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -8,7 +8,7 @@ Official resources of **"BYOS: Knowledge-driven Large Language Models Bring Your
 
 ![Framework](/Users/apple/Downloads/Framework.png)
 
-BYOS (**Bring Your Own Operating System** more excellent) is a novel knowledge-driven framework that automates Linux kernel tuning using Large Language Models (LLMs). BYOS achieves **7.1%-155.4%** performance improvements over default configurations across standard benchmarks and real-world applications.
+KnowOS is a novel knowledge-driven framework that automates Linux kernel tuning using Large Language Models (LLMs). KnowOS achieves **7.1%-155.4%** performance improvements over default configurations across standard benchmarks and real-world applications.
 
 ## Key Features
 
@@ -20,8 +20,8 @@ BYOS (**Bring Your Own Operating System** more excellent) is a novel knowledge-d
 ## Installation
 
 ```bash
-git clone https://github.com/LHY-24/BYOS.git
-cd BYOS
+git clone https://github.com/FlagerLee/KnowOS.git
+cd KnowOS
 pip install -r requirements.txt
 ```
 
@@ -46,7 +46,7 @@ python3 build_kg.py /path/to/linux/kernel/source_code
 **3. Run kernel tuning**:
 
 ```python
-python3 BYOS.py /path/to/linux/kernel/source_code -t "Your optimize target" -o "config output filename"
+python3 KnowOS.py /path/to/linux/kernel/source_code -t "Your optimize target" -o "config output filename"
 ```
 
 **4. Apply configurations**:
@@ -59,18 +59,18 @@ mv config_output /path/to/linux/kernel/source_code/.config
 ## Citation
 
 ```tex
-@misc{BYOS,
+@misc{KnowOS,
   author       = {Hongyu Lin, Yuchen Li, Haoran Luo, Kaichun Yao, Libo Zhang, Mingjie Xing, Yanjun Wu},
-  title        = {BYOS: Knowledge-driven Large Language Models for OS Kernel Tuning},
+  title        = {KnowOS: Knowledge-driven Large Language Models for Operating System Kernel Tuning},
   year         = {2025},
   organization = {GitHub},
-  url          = {https://github.com/LHY-24/BYOS},
+  url          = {https://github.com/FlagerLee/KnowOS},
 }
 ```
 
 ## Feedback
 
-Contributions and feedback are greatly appreciated! Whether you've found a bug, have a question, or want to suggest improvements, please open an issue. Your input helps make BYOS better for everyone.
+Contributions and feedback are greatly appreciated! Whether you've found a bug, have a question, or want to suggest improvements, please open an issue. Your input helps make KnowOS better for everyone.
 
 For further questions, please contact: hongyu2021@iscas.ac.cn, liyuchen2021@iscas.ac.cn, [luohaoran@bupt.edu.cn](mailto:luohaoran@bupt.edu.cn).
 
