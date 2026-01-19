@@ -19,7 +19,7 @@ python3 build_kg.py /path/to/linux/kernel/source_code
 **3. Run kernel tuning**:
 
 ```python
-python3 KnowOS.py /path/to/linux/kernel/source_code -t "Your optimize target" -o "config output filename"
+python3 BYOS.py /path/to/linux/kernel/source_code -t "Your optimize target" -o "config output filename"
 ```
 
 **4. Apply configurations**:
