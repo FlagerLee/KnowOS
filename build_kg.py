@@ -92,7 +92,7 @@ def build_kg(linux_path):
     os.environ['ARCH'] = "x86"
     os.environ['SRCARCH'] = "x86"
 
-    WORKING_DIR = "./kconfig"
+    WORKING_DIR = os.environ['WORKING_DIR']
 
 
     if not os.path.exists(WORKING_DIR):

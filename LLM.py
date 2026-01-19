@@ -1,17 +1,15 @@
-from openai import OpenAI
+from openai import OpenAI, RateLimitError
 import logging
 import re
-
-import Config as C
-
+import time
 
 class ChatContext:
     def __init__(
         self,
         opt_target: str,
         api_key: str,
-        api_url: str = "https://api.ai.cs.ac.cn/v1",
-        model: str = "gpt-3.5-turbo-1106",
+        api_url: str,
+        model: str = "gpt-4o-mini",
     ):
         """
         You should choose an optimization target to start using LLM.
@@ -110,9 +108,16 @@ class ChatContext:
     def chat(self, content: list[dict]) -> str:
         # log
         self.logger.info(f"LLM REQUEST:\n{content}")
-        response = self.client.chat.completions.create(
-            messages=content, model=self.model
-        )
+        try:
+            response = self.client.chat.completions.create(
+                messages=content, model=self.model
+            )
+        except RateLimitError:
+            time.sleep(70)
+            response = self.client.chat.completions.create(
+                messages=content, model=self.model
+            )
+            
         # add prices
         self.price += (
             int(response.usage.prompt_tokens) * self.get_prompt_price()
@@ -139,6 +144,10 @@ class ChatContext:
         answers = answer.split("\n")
         matches = []
         for ans in answers:
+            if ans.startswith('['):
+                ans = ans.strip('[')
+            if ans.endswith(']'):
+                ans = ans.strip(']')
             index = ans.split(" ")[0]
             if index.isspace():
                 continue
